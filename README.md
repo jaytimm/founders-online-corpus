@@ -33,17 +33,11 @@ gfiles <- list.files(path = local,
 ffc <- lapply(gfiles, readRDS) %>% data.table::rbindlist()
 ```
 
-``` r
-cat(ffc$og_text[150681])
-```
-
-    ## 
-    ##                     
-    ##                         Th: J. to Doctr. Franklyn
-    ##                         Friday morn. [21 June 1776?]
-    ##                     
-    ##                     The inclosed paper has been read and with some small alterations approved of by the committee. Will Doctr. Franklyn be so good as to peruse it and suggest such alterations as his more enlarged view of the subject will dictate? The paper having been returned to me to change a particular sentiment or two, I propose laying it again before the committee tomorrow morning, if Doctr. Franklyn can think of it before that time.
-    ## 
+                        Th: J. to Doctr. Franklyn
+                        Friday morn. [21 June 1776?]
+                    
+                    The inclosed paper has been read and with some small alterations approved of by the committee. Will Doctr. Franklyn be so good as to peruse it and suggest such alterations as his more enlarged view of the subject will dictate? The paper having been returned to me to change a particular sentiment or two, I propose laying it again before the committee tomorrow morning, if Doctr. Franklyn can think of it before that time.
+                
 
 Perhaps a `to_letter` function. Nicely formatted as letter.
 
@@ -108,7 +102,7 @@ by_year %>%
   labs(title = "Monthly writings")
 ```
 
-![](README_files/figure-markdown_github/unnamed-chunk-7-1.png)
+![](README_files/figure-markdown_github/unnamed-chunk-6-1.png)
 
 We need to figure out date stuff below – in ggplot –
 
@@ -148,6 +142,6 @@ x1 %>%
        subtitle = 'From 1750 to 1830')
 ```
 
-![](README_files/figure-markdown_github/unnamed-chunk-9-1.png)
+![](README_files/figure-markdown_github/unnamed-chunk-8-1.png)
 
 ### General thoughts:
