@@ -12,8 +12,6 @@ collection of R-based `RDS` files.
 [RDS
 Files](https://github.com/jaytimm/founders_archive_corpus/tree/master/data).
 
-![image](/README_files/figure-markdown_github/founders.png)
-
 ### Load corpus
 
 ``` r
@@ -21,7 +19,8 @@ if (!require("pacman")) install.packages("pacman")
 pacman::p_load(magrittr, dplyr, tidyr, ggplot2, data.table)
 ```
 
-Gather files. Aggregate as single data frame.
+To get started, we aggregate the eight `RDS` files (again, [here]()) as
+a single data frame.
 
 ``` r
 setwd(local)
@@ -32,8 +31,8 @@ gfiles <- list.files(path = local,
 ffc <- lapply(gfiles, readRDS) %>% data.table::rbindlist()
 ```
 
-Columns included in dataset are presented below. The `title`:`date_to`
-columns have been extracted directly from [document
+**Columns included in dataset are presented below.** The
+`title`:`date_to` columns have been extracted directly from [document
 metadata](https://founders.archives.gov/Metadata/) made available by
 Founders Online as XML. The `api` column was derived from the
 `permalink` and `project` columns, and used to access/scrape document
@@ -46,7 +45,9 @@ whitespace and line breaks removed. These data are not perfect.
     ##  [6] "date_from"  "date_to"    "api"        "og_text"    "text"      
     ## [11] "period"
 
-The `period` column ….
+The `period` column categorizes each document in corpus historically.
+Categories/dates are based on Founders Online. `RDS` files are split
+according to these eight categories.
 
 | period                  | general   | start      | end        |
 |:------------------------|:----------|:-----------|:-----------|
@@ -59,10 +60,100 @@ The `period` column ….
 | Madison Presidency      | 1809-1817 | 1809-03-04 | 1817-03-03 |
 | post-Madison Presidency | 1817+     | 1817-03-04 | 1837-01-01 |
 
-### Exporing text
+### Some descriptives
 
-A simple function for displaying document with some metadata inline in a
-`RMD` file.
+Letters & word counts historically – by author – plot over time.
+
+``` r
+data.table::setDT(ffc)
+
+ffc[, doc_length := lengths(gregexpr("\\W+", text))]
+
+ffc$Month_Yr <- sub('-[0-9]*$', '', ffc$date_from)
+ffc$Month_Yr <- as.Date(paste0(ffc$Month_Yr, '-01'), format = '%Y-%m-%d')
+  
+by_year <-ffc[, list(letters_sent = .N, 
+                  word_count = sum(doc_length),
+                  unique_tos = length(unique(recipients))), 
+           by = list(Month_Yr,authors)]
+```
+
+``` r
+by_year %>%
+  filter(!is.na(Month_Yr)) %>%
+  group_by(Month_Yr) %>%
+  summarize(letters_sent = sum(letters_sent)) %>%
+  
+  ggplot(aes(x = Month_Yr, 
+             y = letters_sent)) +
+  geom_line(size=.5, color = 'lightblue') +
+  
+  geom_vline(xintercept = Period_table$start,
+             linetype =2, 
+             color = 'black', 
+             size = .25) +
+   annotate(geom="text", 
+            x = Period_table$start + 750, 
+            y = 10, 
+            label =Period_table$period,
+            size = 3.75,
+            angle = 90,
+            hjust = 0) +
+  scale_x_date(labels = scales::date_format("%Y"),
+               breaks = scales::date_breaks('10 year')) +
+  theme_minimal() +
+  ylab ("") + xlab("") +
+  theme(legend.position="none",
+        axis.text.x = element_text(angle = 45, hjust = 1)) + 
+  labs(title = "Monthly writings")
+```
+
+![](README_files/figure-markdown_github/unnamed-chunk-7-1.png)
+
+We need to figure out date stuff below – in ggplot –
+
+``` r
+founders <- c('Washington, George', 'Adams, John', 'Jefferson, Thomas', 
+              'Madison, James', 'Hamilton, Alexander', 'Franklin, Benjamin')
+```
+
+``` r
+x1 <- by_year %>%
+  filter(authors %in% founders) %>%
+  filter(Month_Yr < as.Date('1830-01-01'),
+         Month_Yr > as.Date('1750-01-01')) 
+
+x1 %>%
+  ggplot(aes(x = Month_Yr, 
+             y = letters_sent, 
+             color = authors,
+             group = authors)) +
+  geom_line(size=.5) +
+  
+  geom_vline(xintercept = Period_table$start,
+             linetype =2, 
+             color = 'black', 
+             size = .25) +
+  
+  theme_minimal() +
+  ggthemes::scale_color_stata() +
+  theme(legend.position="none",
+        axis.text.x = element_text(angle = 45, hjust = 1))+
+  ylab ("") + xlab("") +
+  scale_x_date(labels = scales::date_format("%Y"),
+               breaks = scales::date_breaks('10 year')) +
+  facet_wrap(~authors, 
+             scales = "free_y", 
+             ncol=2) + 
+  labs(title = "Founders' writings over time",
+       subtitle = 'From 1750 to 1830')
+```
+
+![](README_files/figure-markdown_github/unnamed-chunk-9-1.png)
+
+### Exploring text
+
+A simple function for displaying Founder documents & meta inline:
 
 ``` r
 display_letter <- function(x) {
@@ -126,95 +217,4 @@ discussing a couple of Washington’s spies, the Culpers.
 > making of Wood and Forage—and  
 > whether they drive in any stock.
 
-### Some descriptives
-
-Letters & word counts historically – by author – plot over time.
-
-``` r
-data.table::setDT(ffc)
-
-ffc[, doc_length := lengths(gregexpr("\\W+", text))]
-
-ffc$Month_Yr <- sub('-[0-9]*$', '', ffc$date_from)
-ffc$Month_Yr <- as.Date(paste0(ffc$Month_Yr, '-01'), format = '%Y-%m-%d')
-  
-by_year <-ffc[, list(letters_sent = .N, 
-                  word_count = sum(doc_length),
-                  unique_tos = length(unique(recipients))), 
-           by = list(Month_Yr,authors)]
-```
-
-``` r
-by_year %>%
-  filter(!is.na(Month_Yr)) %>%
-  group_by(Month_Yr) %>%
-  summarize(letters_sent = sum(letters_sent)) %>%
-  
-  ggplot(aes(x = Month_Yr, 
-             y = letters_sent)) +
-  geom_line(size=.5, color = 'lightblue') +
-  
-  geom_vline(xintercept = Period_table$start,
-             linetype =2, 
-             color = 'black', 
-             size = .25) +
-   annotate(geom="text", 
-            x = Period_table$start + 750, 
-            y = 10, 
-            label =Period_table$period,
-            size = 3.75,
-            angle = 90,
-            hjust = 0) +
-  scale_x_date(labels = scales::date_format("%Y"),
-               breaks = scales::date_breaks('10 year')) +
-  theme_minimal() +
-  ylab ("") + xlab("") +
-  theme(legend.position="none",
-        axis.text.x = element_text(angle = 45, hjust = 1)) + 
-  labs(title = "Monthly writings")
-```
-
-![](README_files/figure-markdown_github/unnamed-chunk-8-1.png)
-
-We need to figure out date stuff below – in ggplot –
-
-``` r
-founders <- c('Washington, George', 'Adams, John', 'Jefferson, Thomas', 
-              'Madison, James', 'Hamilton, Alexander', 'Franklin, Benjamin')
-```
-
-``` r
-x1 <- by_year %>%
-  filter(authors %in% founders) %>%
-  filter(Month_Yr < as.Date('1830-01-01'),
-         Month_Yr > as.Date('1750-01-01')) 
-
-x1 %>%
-  ggplot(aes(x = Month_Yr, 
-             y = letters_sent, 
-             color = authors,
-             group = authors)) +
-  geom_line(size=.5) +
-  
-  geom_vline(xintercept = Period_table$start,
-             linetype =2, 
-             color = 'black', 
-             size = .25) +
-  
-  theme_minimal() +
-  ggthemes::scale_color_stata() +
-  theme(legend.position="none",
-        axis.text.x = element_text(angle = 45, hjust = 1))+
-  ylab ("") + xlab("") +
-  scale_x_date(labels = scales::date_format("%Y"),
-               breaks = scales::date_breaks('10 year')) +
-  facet_wrap(~authors, 
-             scales = "free_y", 
-             ncol=2) + 
-  labs(title = "Founders' writings over time",
-       subtitle = 'From 1750 to 1830')
-```
-
-![](README_files/figure-markdown_github/unnamed-chunk-10-1.png)
-
-### General thoughts:
+### Caveats
