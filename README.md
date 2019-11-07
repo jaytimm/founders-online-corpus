@@ -32,15 +32,34 @@ gfiles <- list.files(path = local,
 ffc <- lapply(gfiles, readRDS) %>% data.table::rbindlist()
 ```
 
-Columns included in dataset are presented below.
-
-``` r
-colnames(ffc)
-```
+Columns included in dataset are presented below. The `title`:`date_to`
+columns have been extracted directly from [document
+metadata](https://founders.archives.gov/Metadata/) made available by
+Founders Online as XML. The `api` column was derived from the
+`permalink` and `project` columns, and used to access/scrape document
+text. The `og_text` column contains document text as presented on
+Founders Online, which includes quite a bit of line breaks and odd
+spacing. The `text` column is a stripped version of `og_test`, with
+whitespace and line breaks removed. These data are not perfect.
 
     ##  [1] "title"      "permalink"  "project"    "authors"    "recipients"
     ##  [6] "date_from"  "date_to"    "api"        "og_text"    "text"      
     ## [11] "period"
+
+The `period` column ….
+
+| period                  | general   | start      | end        |
+|:------------------------|:----------|:-----------|:-----------|
+| Colonial                | 1706-1775 | 1706-01-01 | 1775-04-18 |
+| Revolutionary War       | 1775-1783 | 1775-04-19 | 1783-09-03 |
+| Confederation Period    | 1783-1789 | 1783-09-04 | 1789-04-29 |
+| Washington Presidency   | 1789-1797 | 1789-04-30 | 1797-03-03 |
+| Adams Presidency        | 1797-1801 | 1797-03-04 | 1801-03-03 |
+| Jefferson Presidency    | 1801-1809 | 1801-03-04 | 1809-03-03 |
+| Madison Presidency      | 1809-1817 | 1809-03-04 | 1817-03-03 |
+| post-Madison Presidency | 1817+     | 1817-03-04 | 1837-01-01 |
+
+### Exporing text
 
 A simple function for displaying document with some metadata inline in a
 `RMD` file.
@@ -59,13 +78,12 @@ display_letter <- function(x) {
   a5 <- gsub(' *\n', '  \n', a4a)
   paste('>', gsub(' *(\n*) *$', '\\1', a5))
 }
-#cat(display_letter(ffc[150681,]))
 #`r display_letter(ffc[150681,])`
 ```
 
-**A letter from Thomas Jefferson to Benjamin Franklin** with an
+A letter from **Thomas Jefferson to Benjamin Franklin** with an
 “inclosed paper” – presumably a draft of the *Declaration of
-Independence*. Well said, sir!!
+Independence*.
 
 > Author: Jefferson, Thomas  
 > Recipient: Franklin, Benjamin  
@@ -80,7 +98,7 @@ Independence*. Well said, sir!!
 > the subject will dictate? The paper having been returned to me to
 > change a particular sentiment or two, I propose laying it again before
 > the committee tomorrow morning, if Doctr. Franklyn can think of it
-> before that time.
+> before that time. <br>
 
 A corrrespondance from **George Washington to Benjamin Tallmadge**
 discussing a couple of Washington’s spies, the Culpers.
@@ -108,32 +126,6 @@ discussing a couple of Washington’s spies, the Culpers.
 > making of Wood and Forage—and  
 > whether they drive in any stock.
 
-**John Adams to Benjamin Franklin** post-Revolutionary War.
-
-> Author: Adams, John  
-> Recipient: Franklin, Benjamin  
-> Date: 1784-06-29  
-> Period: Confederation Period
->
-> Sir  
-> The Hague June 29. 1784  
-> The Baron de Reishack, has several times said to me that his Court
-> expected that Congress would announce formally their Independence, and
-> asked me, if any Step of that Sort had been taken. that I may be able
-> to give him an Answer, I must request of your Excellency to inform me
-> whether you have made the Annunciation directed in the first Article
-> of the Instructions of the 29 of October 1783 and what is the
-> answer.  
-> I have the Pleasure to learn, by report only however that Mr Jay is
-> appointed Minister of foreign Affairs and that Mr Jefferson is
-> appointed to Madrid, and that Mr Johnson has received and transmitted
-> to your Excellency, a Packet which probably contains an authentic
-> Account, as it Seems to be posteriour to the Appointment, by being
-> addressed only to your Excellency and to me. I Should be glad to know
-> whether there is any Thing else of Consequence, and whether it appears
-> to be the design and Expectation of Congress that I should join you,
-> where you are.
-
 ### Some descriptives
 
 Letters & word counts historically – by author – plot over time.
@@ -151,19 +143,6 @@ by_year <-ffc[, list(letters_sent = .N,
                   unique_tos = length(unique(recipients))), 
            by = list(Month_Yr,authors)]
 ```
-
-As table:
-
-| period                  | general   | start      | end        |
-|:------------------------|:----------|:-----------|:-----------|
-| Colonial                | 1706-1775 | 1706-01-01 | 1775-04-18 |
-| Revolutionary War       | 1775-1783 | 1775-04-19 | 1783-09-03 |
-| Confederation Period    | 1783-1789 | 1783-09-04 | 1789-04-29 |
-| Washington Presidency   | 1789-1797 | 1789-04-30 | 1797-03-03 |
-| Adams Presidency        | 1797-1801 | 1797-03-04 | 1801-03-03 |
-| Jefferson Presidency    | 1801-1809 | 1801-03-04 | 1809-03-03 |
-| Madison Presidency      | 1809-1817 | 1809-03-04 | 1817-03-03 |
-| post-Madison Presidency | 1817+     | 1817-03-04 | 1837-01-01 |
 
 ``` r
 by_year %>%
