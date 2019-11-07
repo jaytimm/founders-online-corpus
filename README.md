@@ -31,18 +31,20 @@ gfiles <- list.files(path = local,
                      recursive = TRUE) 
 
 ffc <- lapply(gfiles, readRDS) %>% data.table::rbindlist()
-
-## Text tweaks --
-xx <- paste('>', gsub(' *(\n*) *$', '\\1', ffc$text[150681]))
 ```
 
-> Th: J. to Doctr. Franklyn Friday morn. \[21 June 1776?\] The inclosed
-> paper has been read and with some small alterations approved of by the
-> committee. Will Doctr. Franklyn be so good as to peruse it and suggest
-> such alterations as his more enlarged view of the subject will
-> dictate? The paper having been returned to me to change a particular
-> sentiment or two, I propose laying it again before the committee
-> tomorrow morning, if Doctr. Franklyn can think of it before that time.
+``` r
+xx <- gsub(' *\n', '  \n', ffc$og_text[150681])
+xx <- gsub('( *\n){2,}', '\n\n> ', xx)
+xx <- paste('>', gsub(' *(\n*) *$', '\\1', xx))
+#yy <- paste('>', gsub(' *(\n*) *$', '\\1', ffc$text[150681]))
+```
+
+>                         Th: J. to Doctr. Franklyn  
+>
+> Friday morn. \[21 June 1776?\]
+
+>                     The inclosed paper has been read and with some small alterations approved of by the committee. Will Doctr. Franklyn be so good as to peruse it and suggest such alterations as his more enlarged view of the subject will dictate? The paper having been returned to me to change a particular sentiment or two, I propose laying it again before the committee tomorrow morning, if Doctr. Franklyn can think of it before that time.
 
 Perhaps a `to_letter` function. Nicely formatted as letter.
 
@@ -107,7 +109,7 @@ by_year %>%
   labs(title = "Monthly writings")
 ```
 
-![](README_files/figure-markdown_github/unnamed-chunk-6-1.png)
+![](README_files/figure-markdown_github/unnamed-chunk-7-1.png)
 
 We need to figure out date stuff below – in ggplot –
 
@@ -135,6 +137,7 @@ x1 %>%
              size = .25) +
   
   theme_minimal() +
+  ggthemes::scale_color_stata() +
   theme(legend.position="none",
         axis.text.x = element_text(angle = 45, hjust = 1))+
   ylab ("") + xlab("") +
@@ -147,6 +150,6 @@ x1 %>%
        subtitle = 'From 1750 to 1830')
 ```
 
-![](README_files/figure-markdown_github/unnamed-chunk-8-1.png)
+![](README_files/figure-markdown_github/unnamed-chunk-9-1.png)
 
 ### General thoughts:
