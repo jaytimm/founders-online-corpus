@@ -37,7 +37,7 @@ clean_text <- function(x) {
   a1 <- strsplit(x, '\n')[[1]]
   a2 <- trimws(a1)
   a3 <- subset(a2, a2 != '')
-  paste(a3, collapse = '\n\n')}
+  paste(a3, collapse = '\n')}
 ```
 
 ``` r
@@ -51,22 +51,18 @@ cat(xx)
 ```
 
     ## > Th: J. to Doctr. Franklyn  
-    ##   
     ## Friday morn. [21 June 1776?]  
-    ##   
     ## The inclosed paper has been read and with some small alterations approved of by the committee. Will Doctr. Franklyn be so good as to peruse it and suggest such alterations as his more enlarged view of the subject will dictate? The paper having been returned to me to change a particular sentiment or two, I propose laying it again before the committee tomorrow morning, if Doctr. Franklyn can think of it before that time.
 
-> Th: J. to Doctr. Franklyn
-
-Friday morn. \[21 June 1776?\]
-
-The inclosed paper has been read and with some small alterations
-approved of by the committee. Will Doctr. Franklyn be so good as to
-peruse it and suggest such alterations as his more enlarged view of the
-subject will dictate? The paper having been returned to me to change a
-particular sentiment or two, I propose laying it again before the
-committee tomorrow morning, if Doctr. Franklyn can think of it before
-that time.
+> Th: J. to Doctr. Franklyn  
+> Friday morn. \[21 June 1776?\]  
+> The inclosed paper has been read and with some small alterations
+> approved of by the committee. Will Doctr. Franklyn be so good as to
+> peruse it and suggest such alterations as his more enlarged view of
+> the subject will dictate? The paper having been returned to me to
+> change a particular sentiment or two, I propose laying it again before
+> the committee tomorrow morning, if Doctr. Franklyn can think of it
+> before that time.
 
 Perhaps a `to_letter` function. Nicely formatted as letter.
 
