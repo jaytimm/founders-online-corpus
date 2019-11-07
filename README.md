@@ -10,8 +10,7 @@ documents/metadata included in Founders Online, and collate them as a
 collection of R-based `RDS` files.
 [R-Script](https://github.com/jaytimm/founders_archive_corpus/blob/master/scrape_founders_archive.R).
 [RDS
-Files](https://github.com/jaytimm/founders_archive_corpus/tree/master/data),
-organized by Founders Online-defined historical periods.
+Files](https://github.com/jaytimm/founders_archive_corpus/tree/master/data).
 
 ![image](/README_files/figure-markdown_github/founders.png)
 
@@ -45,21 +44,29 @@ clean_text <- function(x) {
 z <- clean_text(ffc$og_text[150681])
 
 xx <- gsub(' *\n', '  \n', z)
-xx <- gsub('( *\n){2,}', '\n\n> ', xx)
+#xx <- gsub('( *\n){2,}', '\n\n> ', xx)
 xx <- paste('>', gsub(' *(\n*) *$', '\\1', xx))
+
+cat(xx)
 ```
+
+    ## > Th: J. to Doctr. Franklyn  
+    ##   
+    ## Friday morn. [21 June 1776?]  
+    ##   
+    ## The inclosed paper has been read and with some small alterations approved of by the committee. Will Doctr. Franklyn be so good as to peruse it and suggest such alterations as his more enlarged view of the subject will dictate? The paper having been returned to me to change a particular sentiment or two, I propose laying it again before the committee tomorrow morning, if Doctr. Franklyn can think of it before that time.
 
 > Th: J. to Doctr. Franklyn
 
-> Friday morn. \[21 June 1776?\]
+Friday morn. \[21 June 1776?\]
 
-> The inclosed paper has been read and with some small alterations
-> approved of by the committee. Will Doctr. Franklyn be so good as to
-> peruse it and suggest such alterations as his more enlarged view of
-> the subject will dictate? The paper having been returned to me to
-> change a particular sentiment or two, I propose laying it again before
-> the committee tomorrow morning, if Doctr. Franklyn can think of it
-> before that time.
+The inclosed paper has been read and with some small alterations
+approved of by the committee. Will Doctr. Franklyn be so good as to
+peruse it and suggest such alterations as his more enlarged view of the
+subject will dictate? The paper having been returned to me to change a
+particular sentiment or two, I propose laying it again before the
+committee tomorrow morning, if Doctr. Franklyn can think of it before
+that time.
 
 Perhaps a `to_letter` function. Nicely formatted as letter.
 
