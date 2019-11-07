@@ -42,20 +42,26 @@ display_letter <- function(x) {
   a3 <- subset(a2, a2 != '')
   a4 <- paste(a3, collapse = '\n')
   
-  a4a <-paste0('Author: ', x$author, '\n>\n', 
-               'Recipient: ', x$recipient, '\n>\n', 
+  a4a <-paste0('Author: ', x$author, '\n>', 
+               'Recipient: ', x$recipient, '\n>', 
                'Date: ', x$date_to, '\n>\n', 
                a4)
   a5 <- gsub(' *\n', '  \n', a4a)
   paste('>', gsub(' *(\n*) *$', '\\1', a5))
 }
- #cat(display_letter(ffc[150681,]))
+ cat(display_letter(ffc[150681,]))
 ```
 
-> Author: Jefferson, Thomas
->
-> Recipient: Franklin, Benjamin
->
+    ## > Author: Jefferson, Thomas  
+    ## >Recipient: Franklin, Benjamin  
+    ## >Date: 1776-06-21  
+    ## >  
+    ## Th: J. to Doctr. Franklyn  
+    ## Friday morn. [21 June 1776?]  
+    ## The inclosed paper has been read and with some small alterations approved of by the committee. Will Doctr. Franklyn be so good as to peruse it and suggest such alterations as his more enlarged view of the subject will dictate? The paper having been returned to me to change a particular sentiment or two, I propose laying it again before the committee tomorrow morning, if Doctr. Franklyn can think of it before that time.
+
+> Author: Jefferson, Thomas  
+> Recipient: Franklin, Benjamin  
 > Date: 1776-06-21
 >
 > Th: J. to Doctr. Franklyn  
