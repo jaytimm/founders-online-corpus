@@ -31,15 +31,18 @@ gfiles <- list.files(path = local,
                      recursive = TRUE) 
 
 ffc <- lapply(gfiles, readRDS) %>% data.table::rbindlist()
+
+## Text tweaks --
+xx <- paste('>', gsub(' *(\n*) *$', '\\1', ffc$text[150681]))
 ```
 
-Th: J. to Doctr. Franklyn Friday morn. \[21 June 1776?\] The inclosed
-paper has been read and with some small alterations approved of by the
-committee. Will Doctr. Franklyn be so good as to peruse it and suggest
-such alterations as his more enlarged view of the subject will dictate?
-The paper having been returned to me to change a particular sentiment or
-two, I propose laying it again before the committee tomorrow morning, if
-Doctr. Franklyn can think of it before that time.
+> Th: J. to Doctr. Franklyn Friday morn. \[21 June 1776?\] The inclosed
+> paper has been read and with some small alterations approved of by the
+> committee. Will Doctr. Franklyn be so good as to peruse it and suggest
+> such alterations as his more enlarged view of the subject will
+> dictate? The paper having been returned to me to change a particular
+> sentiment or two, I propose laying it again before the committee
+> tomorrow morning, if Doctr. Franklyn can think of it before that time.
 
 Perhaps a `to_letter` function. Nicely formatted as letter.
 
