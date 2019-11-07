@@ -4,14 +4,16 @@ Founders Online Corpus
 [Founders Online](https://founders.archives.gov/) is a [National
 Archives](https://www.archives.gov/) resource that makes available
 \~180K writings/letters of the Founders of the United States of America.
-A treasure trove. Here, we simply extract (via
-[API](https://founders.archives.gov/API/docdata/)) all
-documents/metadata included in Founders Online, and collate them as a
-collection of R-based `RDS` files.
+A treasure trove. I have extracted all documents/metadata included in
+Founders Online (via [API](https://founders.archives.gov/API/docdata/)),
+and collated them as a collection of R-based `RDS` files.
 
 -   [R-Script](https://github.com/jaytimm/founders_archive_corpus/blob/master/scrape_founders_archive.R).
 -   [RDS
     Files](https://github.com/jaytimm/founders_archive_corpus/tree/master/data).
+
+Here, we walk through some details about the corpus, as well as some
+basic descriptives.
 
 ------------------------------------------------------------------------
 
