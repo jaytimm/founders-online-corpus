@@ -32,28 +32,32 @@ gfiles <- list.files(path = local,
 ffc <- lapply(gfiles, readRDS) %>% data.table::rbindlist()
 ```
 
+Perhaps a `to_letter` function. Nicely formatted as letter.  
+*Author - Recipient - Date-to*
+
 ``` r
-clean_text <- function(x) {
-  a1 <- strsplit(x, '\n')[[1]]
+display_letter <- function(x) {
+  a1 <- strsplit(x$og_text, '\n')[[1]]
   a2 <- trimws(a1)
   a3 <- subset(a2, a2 != '')
-  paste(a3, collapse = '\n')}
+  a4 <- paste(a3, collapse = '\n')
+  
+  a4a <-paste0('Author: ', x$author, '\n>\n', 
+               'Recipient: ', x$recipient, '\n>\n', 
+               'Date: ', x$date_to, '\n>\n', 
+               a4)
+  a5 <- gsub(' *\n', '  \n', a4a)
+  paste('>', gsub(' *(\n*) *$', '\\1', a5))
+}
+ #cat(display_letter(ffc[150681,]))
 ```
 
-``` r
-z <- clean_text(ffc$og_text[150681])
-
-xx <- gsub(' *\n', '  \n', z)
-#xx <- gsub('( *\n){2,}', '\n\n> ', xx)
-xx <- paste('>', gsub(' *(\n*) *$', '\\1', xx))
-
-cat(xx)
-```
-
-    ## > Th: J. to Doctr. Franklyn  
-    ## Friday morn. [21 June 1776?]  
-    ## The inclosed paper has been read and with some small alterations approved of by the committee. Will Doctr. Franklyn be so good as to peruse it and suggest such alterations as his more enlarged view of the subject will dictate? The paper having been returned to me to change a particular sentiment or two, I propose laying it again before the committee tomorrow morning, if Doctr. Franklyn can think of it before that time.
-
+> Author: Jefferson, Thomas
+>
+> Recipient: Franklin, Benjamin
+>
+> Date: 1776-06-21
+>
 > Th: J. to Doctr. Franklyn  
 > Friday morn. \[21 June 1776?\]  
 > The inclosed paper has been read and with some small alterations
@@ -63,8 +67,6 @@ cat(xx)
 > change a particular sentiment or two, I propose laying it again before
 > the committee tomorrow morning, if Doctr. Franklyn can think of it
 > before that time.
-
-Perhaps a `to_letter` function. Nicely formatted as letter.
 
 ### Some descriptives
 
@@ -127,7 +129,7 @@ by_year %>%
   labs(title = "Monthly writings")
 ```
 
-![](README_files/figure-markdown_github/unnamed-chunk-8-1.png)
+![](README_files/figure-markdown_github/unnamed-chunk-7-1.png)
 
 We need to figure out date stuff below – in ggplot –
 
@@ -168,6 +170,6 @@ x1 %>%
        subtitle = 'From 1750 to 1830')
 ```
 
-![](README_files/figure-markdown_github/unnamed-chunk-10-1.png)
+![](README_files/figure-markdown_github/unnamed-chunk-9-1.png)
 
 ### General thoughts:
