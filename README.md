@@ -60,6 +60,7 @@ display_letter <- function(x) {
   paste('>', gsub(' *(\n*) *$', '\\1', a5))
 }
 #cat(display_letter(ffc[150681,]))
+#`r display_letter(ffc[150681,])`
 ```
 
 **A letter from Thomas Jefferson to Benjamin Franklin** with an
@@ -81,7 +82,7 @@ Independence*. Well said, sir!!
 > the committee tomorrow morning, if Doctr. Franklyn can think of it
 > before that time.
 
-A corrrespondance from George Washington to Benjamin Tallmadge
+A corrrespondance from **George Washington to Benjamin Tallmadge**
 discussing a couple of Washington’s spies, the Culpers.
 
 > Author: Washington, George  
@@ -107,7 +108,7 @@ discussing a couple of Washington’s spies, the Culpers.
 > making of Wood and Forage—and  
 > whether they drive in any stock.
 
-Another letter example:
+**John Adams to Benjamin Franklin** post-Revolutionary War.
 
 > Author: Adams, John  
 > Recipient: Franklin, Benjamin  
