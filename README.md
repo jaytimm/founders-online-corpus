@@ -51,16 +51,16 @@ The `period` column categorizes each document in corpus historically.
 Categories/dates are based on Founders Online. `RDS` files are split
 according to these eight categories.
 
-| period                  | general   | start      | end        |
-|:------------------------|:----------|:-----------|:-----------|
-| Colonial                | 1706-1775 | 1706-01-01 | 1775-04-18 |
-| Revolutionary War       | 1775-1783 | 1775-04-19 | 1783-09-03 |
-| Confederation Period    | 1783-1789 | 1783-09-04 | 1789-04-29 |
-| Washington Presidency   | 1789-1797 | 1789-04-30 | 1797-03-03 |
-| Adams Presidency        | 1797-1801 | 1797-03-04 | 1801-03-03 |
-| Jefferson Presidency    | 1801-1809 | 1801-03-04 | 1809-03-03 |
-| Madison Presidency      | 1809-1817 | 1809-03-04 | 1817-03-03 |
-| post-Madison Presidency | 1817+     | 1817-03-04 | 1837-01-01 |
+|    n| period                  | general   | start      | end        |
+|----:|:------------------------|:----------|:-----------|:-----------|
+|    1| Colonial                | 1706-1775 | 1706-01-01 | 1775-04-18 |
+|    2| Revolutionary War       | 1775-1783 | 1775-04-19 | 1783-09-03 |
+|    3| Confederation Period    | 1783-1789 | 1783-09-04 | 1789-04-29 |
+|    4| Washington Presidency   | 1789-1797 | 1789-04-30 | 1797-03-03 |
+|    5| Adams Presidency        | 1797-1801 | 1797-03-04 | 1801-03-03 |
+|    6| Jefferson Presidency    | 1801-1809 | 1801-03-04 | 1809-03-03 |
+|    7| Madison Presidency      | 1809-1817 | 1809-03-04 | 1817-03-03 |
+|    8| post-Madison Presidency | 1817+     | 1817-03-04 | 1837-01-01 |
 
 ### § Some descriptives
 
@@ -71,46 +71,30 @@ data.table::setDT(ffc)
 
 ffc[, doc_length := lengths(gregexpr("\\W+", text))]
 
-ffc$Month_Yr <- sub('-[0-9]*$', '', ffc$date_from)
-ffc$Month_Yr <- as.Date(paste0(ffc$Month_Yr, '-01'), format = '%Y-%m-%d')
-  
-by_year <-ffc[, list(letters_sent = .N, 
-                  word_count = sum(doc_length),
-                  unique_tos = length(unique(recipients))), 
-           by = list(Month_Yr,authors)]
+by_period <-ffc[, list(doc_n = .N, 
+                       word_count = sum(doc_length)),
+                by = list(period)]
+
+by_period %>% 
+  left_join(Period_table %>% select(n, period)) %>% 
+  arrange(n) %>% 
+  janitor::adorn_totals(c('row')) %>%
+  mutate_if(is.numeric, formatC, big.mark=",") %>%
+  select(-n) %>%
+  knitr::kable()
 ```
 
-``` r
-by_year %>%
-  filter(!is.na(Month_Yr)) %>%
-  group_by(Month_Yr) %>%
-  summarize(letters_sent = sum(letters_sent)) %>%
-  
-  ggplot(aes(x = Month_Yr, 
-             y = letters_sent)) +
-  geom_line(size=.5, color = 'lightblue') +
-  
-  geom_vline(xintercept = Period_table$start,
-             linetype =2, 
-             color = 'black', 
-             size = .25) +
-   annotate(geom="text", 
-            x = Period_table$start + 750, 
-            y = 10, 
-            label =Period_table$period,
-            size = 3.75,
-            angle = 90,
-            hjust = 0) +
-  scale_x_date(labels = scales::date_format("%Y"),
-               breaks = scales::date_breaks('10 year')) +
-  theme_minimal() +
-  ylab ("") + xlab("") +
-  theme(legend.position="none",
-        axis.text.x = element_text(angle = 45, hjust = 1)) + 
-  labs(title = "Monthly writings")
-```
-
-![](README_files/figure-markdown_github/unnamed-chunk-7-1.png)
+| period                  | doc\_n  | word\_count |
+|:------------------------|:--------|:------------|
+| Colonial                | 16,111  | 5,569,488   |
+| Revolutionary War       | 48,502  | 16,255,296  |
+| Confederation Period    | 17,024  | 7,184,958   |
+| Washington Presidency   | 27,531  | 10,435,172  |
+| Adams Presidency        | 13,743  | 4,351,329   |
+| Jefferson Presidency    | 28,854  | 10,883,697  |
+| Madison Presidency      | 15,094  | 6,468,738   |
+| post-Madison Presidency | 14,618  | 5,026,013   |
+| Total                   | 181,477 | 66,174,691  |
 
 We need to figure out date stuff below – in ggplot –
 
@@ -120,23 +104,24 @@ founders <- c('Washington, George', 'Adams, John', 'Jefferson, Thomas',
 ```
 
 ``` r
-x1 <- by_year %>%
+ffc$Month_Yr <- sub('-[0-9]*$', '', ffc$date_from)
+ffc$Month_Yr <- as.Date(paste0(ffc$Month_Yr, '-01'), format = '%Y-%m-%d')
+  
+ffc[, list(doc_n = .N), 
+           by = list(Month_Yr,authors)] %>%
   filter(authors %in% founders) %>%
   filter(Month_Yr < as.Date('1830-01-01'),
-         Month_Yr > as.Date('1750-01-01')) 
-
-x1 %>%
+         Month_Yr > as.Date('1750-01-01')) %>%
+  
   ggplot(aes(x = Month_Yr, 
-             y = letters_sent, 
+             y = doc_n, 
              color = authors,
              group = authors)) +
   geom_line(size=.5) +
-  
   geom_vline(xintercept = Period_table$start,
              linetype =2, 
              color = 'black', 
              size = .25) +
-  
   theme_minimal() +
   ggthemes::scale_color_stata() +
   theme(legend.position="none",
@@ -151,7 +136,7 @@ x1 %>%
        subtitle = 'From 1750 to 1830')
 ```
 
-![](README_files/figure-markdown_github/unnamed-chunk-9-1.png)
+![](README_files/figure-markdown_github/unnamed-chunk-8-1.png)
 
 ### § Exploring text
 
