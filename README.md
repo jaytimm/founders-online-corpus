@@ -12,7 +12,9 @@ collection of R-based `RDS` files.
 [RDS
 Files](https://github.com/jaytimm/founders_archive_corpus/tree/master/data).
 
-### Load corpus
+------------------------------------------------------------------------
+
+### § Load corpus
 
 ``` r
 if (!require("pacman")) install.packages("pacman")
@@ -60,7 +62,7 @@ according to these eight categories.
 | Madison Presidency      | 1809-1817 | 1809-03-04 | 1817-03-03 |
 | post-Madison Presidency | 1817+     | 1817-03-04 | 1837-01-01 |
 
-### Some descriptives
+### § Some descriptives
 
 Letters & word counts historically – by author – plot over time.
 
@@ -151,7 +153,7 @@ x1 %>%
 
 ![](README_files/figure-markdown_github/unnamed-chunk-9-1.png)
 
-### Exploring text
+### § Exploring text
 
 A simple function for displaying Founder documents & meta inline:
 
@@ -217,4 +219,4 @@ discussing a couple of Washington’s spies, the Culpers.
 > making of Wood and Forage—and  
 > whether they drive in any stock.
 
-### Caveats
+### § Caveats
