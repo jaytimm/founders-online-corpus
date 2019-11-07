@@ -21,8 +21,8 @@ if (!require("pacman")) install.packages("pacman")
 pacman::p_load(magrittr, dplyr, tidyr, ggplot2, data.table)
 ```
 
-To get started, we aggregate the eight `RDS` files (again, [here]()) as
-a single data frame.
+To get started, we aggregate the eight `RDS` files ([here]()) as a
+single data frame.
 
 ``` r
 setwd(local)
@@ -64,7 +64,10 @@ according to these eight categories.
 
 ### § Some descriptives
 
-Letters & word counts historically – by author – plot over time.
+The table below summarizes the number of documents and number of words
+per corpus sub-period. Note that word counts are very rough, and that a
+single document may be double counted. (see Founders Online for an
+explanation). So, \~180k document/66 million word corpus.
 
 ``` r
 data.table::setDT(ffc)
@@ -96,7 +99,8 @@ by_period %>%
 | post-Madison Presidency | 14,618  | 5,026,013   |
 | Total                   | 181,477 | 66,174,691  |
 
-We need to figure out date stuff below – in ggplot –
+The plot below summarizes document generation by month for the six major
+Founders over a \~eighty-year time period.
 
 ``` r
 founders <- c('Washington, George', 'Adams, John', 'Jefferson, Thomas', 
@@ -132,7 +136,7 @@ ffc[, list(doc_n = .N),
   facet_wrap(~authors, 
              scales = "free_y", 
              ncol=2) + 
-  labs(title = "Founders' writings over time",
+  labs(title = "Founders' writings historically by month",
        subtitle = 'From 1750 to 1830')
 ```
 
