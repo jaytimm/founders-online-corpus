@@ -8,9 +8,10 @@ A treasure trove. Here, we simply extract (via
 [API](https://founders.archives.gov/API/docdata/)) all
 documents/metadata included in Founders Online, and collate them as a
 collection of R-based `RDS` files.
-[R-Script](https://github.com/jaytimm/founders_archive_corpus/blob/master/scrape_founders_archive.R).
-[RDS
-Files](https://github.com/jaytimm/founders_archive_corpus/tree/master/data).
+
+-   [R-Script](https://github.com/jaytimm/founders_archive_corpus/blob/master/scrape_founders_archive.R).
+-   [RDS
+    Files](https://github.com/jaytimm/founders_archive_corpus/tree/master/data).
 
 ------------------------------------------------------------------------
 
