@@ -1,5 +1,5 @@
-Founders Archives Corpus
-------------------------
+Founders Online Corpus
+----------------------
 
 [Founders Online](https://founders.archives.gov/) is a [National
 Archives](https://www.archives.gov/) resource that makes available
@@ -22,7 +22,7 @@ pacman::p_load(magrittr, dplyr, tidyr, ggplot2, data.table)
 ```
 
 To get started, we aggregate the eight `RDS` files ([here]()) as a
-single data frame.
+single data frame. Resulting data structure is a TIF-compliant corpus.
 
 ``` r
 setwd(local)
@@ -66,8 +66,8 @@ according to these eight categories.
 
 The table below summarizes the number of documents and number of words
 per corpus sub-period. Note that word counts are very rough, and that a
-single document may be double counted. (see Founders Online for an
-explanation). So, \~180k document/66 million word corpus.
+single document may be double counted. (See Founders Online for an
+explanation). So, **\~180k document/66 million word corpus**.
 
 ``` r
 data.table::setDT(ffc)
@@ -100,7 +100,7 @@ by_period %>%
 | Total                   | 181,477 | 66,174,691  |
 
 The plot below summarizes document generation by month for the six major
-Founders over a \~eighty-year time period.
+Founders over an eighty year time period.
 
 ``` r
 founders <- c('Washington, George', 'Adams, John', 'Jefferson, Thomas', 
@@ -144,7 +144,8 @@ ffc[, list(doc_n = .N),
 
 ### § Exploring text
 
-A simple function for displaying Founder documents & meta inline:
+**A simple function** for displaying Founder documents & metadata
+inline:
 
 ``` r
 display_letter <- function(x) {
@@ -208,4 +209,12 @@ discussing a couple of Washington’s spies, the Culpers.
 > making of Wood and Forage—and  
 > whether they drive in any stock.
 
-### § Caveats
+### § Caveat
+
+With the exception of the `text` column, the data presented here have
+been extracted without modification from the Founders Online website.
+Any data weirdness (of which there is some) lives in the original data
+source. This is only to say that the user can make their own decisions
+on how to address some of these issues as all original data exist in the
+files made available here. Thanks to folks at [Founders
+Online](https://founders.archives.gov/about)!!
