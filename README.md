@@ -1,19 +1,17 @@
 Founders Archives Corpus
 ------------------------
 
-The folks at the [National Archives]() … These texts are made available
-… Here, we make them available as simple RDS & CSV files. The R-code for
-extracting data from Founders Online is available [here]().
-
-A quick description of the Founders Archives Corpus (FAC).
-
--   [Founders Online](https://founders.archives.gov/)
--   [Corpus of Founding Era American
-    English](https://lcl.byu.edu/projects/cofea/)
--   [BYU Law Corpora](https://lawcorpus.byu.edu/)
-
-And some potential ideas via [LESSON
-PLANS](https://founders.archives.gov/content/lesson_plans) – !
+[Founders Online](https://founders.archives.gov/) is a [National
+Archives](https://www.archives.gov/) resource that makes available
+\~180K writings/letters of the Founders of the United States of America.
+A treasure trove. Here, we simply extract (via
+[API](https://founders.archives.gov/API/docdata/)) all
+documents/metadata included in Founders Online, and collate them as a
+collection of R-based `RDS` files.
+[R-Script](https://github.com/jaytimm/founders_archive_corpus/blob/master/scrape_founders_archive.R).
+[RDS
+Files](https://github.com/jaytimm/founders_archive_corpus/tree/master/data),
+organized by Founders Online-defined historical periods.
 
 ![image](/README_files/figure-markdown_github/founders.png)
 
@@ -22,26 +20,34 @@ PLANS](https://founders.archives.gov/content/lesson_plans) – !
 ``` r
 if (!require("pacman")) install.packages("pacman")
 pacman::p_load(magrittr, dplyr, tidyr, ggplot2, data.table)
-setwd(local)
-ffc <- readRDS("founding-fathers-corpus.rds")
 ```
 
-Richmond. Winchester: Tuesday January 6th 1756.
-
-Whereas it has been represented to Colonel Washington, that Ensign
-Dekeyser has been guilty of a breach of the twenty-third article of War;
-by behaving in a manner unbecoming the character of a Gentleman, and an
-Officer—He is ordered to appear before a Court of enquiry, which will
-sit to examine into the complaint to-morrow at ten of the clock. The
-Court to consist of nine Officers; none under the degree of a
-Captain—Lieutenant Colonel Stephen, President. All Evidences to attend.
-
-### Some descriptives
+Gather files. Aggregate as single data frame.
 
 ``` r
-founders <- c('Washington, George', 'Adams, John', 'Jefferson, Thomas', 
-              'Madison, James', 'Hamilton, Alexander', 'Franklin, Benjamin')
+setwd(local)
+gfiles <- list.files(path = local, 
+                     pattern = "rds", 
+                     recursive = TRUE) 
+
+ffc <- lapply(gfiles, readRDS) %>% data.table::rbindlist()
 ```
+
+``` r
+cat(ffc$og_text[150681])
+```
+
+    ## 
+    ##                     
+    ##                         Th: J. to Doctr. Franklyn
+    ##                         Friday morn. [21 June 1776?]
+    ##                     
+    ##                     The inclosed paper has been read and with some small alterations approved of by the committee. Will Doctr. Franklyn be so good as to peruse it and suggest such alterations as his more enlarged view of the subject will dictate? The paper having been returned to me to change a particular sentiment or two, I propose laying it again before the committee tomorrow morning, if Doctr. Franklyn can think of it before that time.
+    ## 
+
+Perhaps a `to_letter` function. Nicely formatted as letter.
+
+### Some descriptives
 
 Letters & word counts historically – by author – plot over time.
 
@@ -65,7 +71,7 @@ As table:
 |:------------------------|:----------|:-----------|:-----------|
 | Colonial                | 1706-1775 | 1706-01-01 | 1775-04-18 |
 | Revolutionary War       | 1775-1783 | 1775-04-19 | 1783-09-03 |
-| Confederation Period    | 1783-1789 | 1783-11-04 | 1789-04-29 |
+| Confederation Period    | 1783-1789 | 1783-09-04 | 1789-04-29 |
 | Washington Presidency   | 1789-1797 | 1789-04-30 | 1797-03-03 |
 | Adams Presidency        | 1797-1801 | 1797-03-04 | 1801-03-03 |
 | Jefferson Presidency    | 1801-1809 | 1801-03-04 | 1809-03-03 |
@@ -102,9 +108,14 @@ by_year %>%
   labs(title = "Monthly writings")
 ```
 
-![](README_files/figure-markdown_github/unnamed-chunk-6-1.png)
+![](README_files/figure-markdown_github/unnamed-chunk-7-1.png)
 
 We need to figure out date stuff below – in ggplot –
+
+``` r
+founders <- c('Washington, George', 'Adams, John', 'Jefferson, Thomas', 
+              'Madison, James', 'Hamilton, Alexander', 'Franklin, Benjamin')
+```
 
 ``` r
 x1 <- by_year %>%
@@ -137,6 +148,6 @@ x1 %>%
        subtitle = 'From 1750 to 1830')
 ```
 
-![](README_files/figure-markdown_github/unnamed-chunk-7-1.png)
+![](README_files/figure-markdown_github/unnamed-chunk-9-1.png)
 
 ### General thoughts:
