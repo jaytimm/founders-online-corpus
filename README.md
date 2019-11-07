@@ -99,8 +99,8 @@ by_period %>%
 | post-Madison Presidency | 14,618  | 5,026,013   |
 | Total                   | 181,477 | 66,174,691  |
 
-The plot below summarizes document generation by month for the six major
-Founders over an eighty year time period.
+The plot below summarizes document generation by month for the **six
+major Founders** over an eighty year time period.
 
 ``` r
 founders <- c('Washington, George', 'Adams, John', 'Jefferson, Thomas', 
