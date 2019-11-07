@@ -14,7 +14,7 @@ Files](https://github.com/jaytimm/founders_archive_corpus/tree/master/data).
 
 ![image](/README_files/figure-markdown_github/founders.png)
 
-### Data
+### Load corpus
 
 ``` r
 if (!require("pacman")) install.packages("pacman")
@@ -32,8 +32,18 @@ gfiles <- list.files(path = local,
 ffc <- lapply(gfiles, readRDS) %>% data.table::rbindlist()
 ```
 
-Perhaps a `to_letter` function. Nicely formatted as letter.  
-*Author - Recipient - Date-to*
+Columns included in dataset are presented below.
+
+``` r
+colnames(ffc)
+```
+
+    ##  [1] "title"      "permalink"  "project"    "authors"    "recipients"
+    ##  [6] "date_from"  "date_to"    "api"        "og_text"    "text"      
+    ## [11] "period"
+
+A simple function for displaying document with some metadata inline in a
+`RMD` file.
 
 ``` r
 display_letter <- function(x) {
@@ -41,28 +51,33 @@ display_letter <- function(x) {
   a2 <- trimws(a1)
   a3 <- subset(a2, a2 != '')
   a4 <- paste(a3, collapse = '\n')
-  
   a4a <-paste0('Author: ', x$author, '\n>', 
                'Recipient: ', x$recipient, '\n>', 
-               'Date: ', x$date_to, '\n>\n', 
+               'Date: ', x$date_to, '\n>', 
+               'Period: ', x$period, '\n>\n', 
                a4)
   a5 <- gsub(' *\n', '  \n', a4a)
   paste('>', gsub(' *(\n*) *$', '\\1', a5))
 }
- cat(display_letter(ffc[150681,]))
+cat(display_letter(ffc[150681,]))
 ```
 
     ## > Author: Jefferson, Thomas  
     ## >Recipient: Franklin, Benjamin  
     ## >Date: 1776-06-21  
+    ## >Period: Revolutionary War  
     ## >  
     ## Th: J. to Doctr. Franklyn  
     ## Friday morn. [21 June 1776?]  
     ## The inclosed paper has been read and with some small alterations approved of by the committee. Will Doctr. Franklyn be so good as to peruse it and suggest such alterations as his more enlarged view of the subject will dictate? The paper having been returned to me to change a particular sentiment or two, I propose laying it again before the committee tomorrow morning, if Doctr. Franklyn can think of it before that time.
 
+A letter from Thomas Jefferson to Benjamin Franklin with an “inclosed
+paper” – presumably a draft of the *Declaration of Independence*.
+
 > Author: Jefferson, Thomas  
 > Recipient: Franklin, Benjamin  
-> Date: 1776-06-21
+> Date: 1776-06-21  
+> Period: Revolutionary War
 >
 > Th: J. to Doctr. Franklyn  
 > Friday morn. \[21 June 1776?\]  
@@ -135,7 +150,7 @@ by_year %>%
   labs(title = "Monthly writings")
 ```
 
-![](README_files/figure-markdown_github/unnamed-chunk-7-1.png)
+![](README_files/figure-markdown_github/unnamed-chunk-8-1.png)
 
 We need to figure out date stuff below – in ggplot –
 
@@ -176,6 +191,6 @@ x1 %>%
        subtitle = 'From 1750 to 1830')
 ```
 
-![](README_files/figure-markdown_github/unnamed-chunk-9-1.png)
+![](README_files/figure-markdown_github/unnamed-chunk-10-1.png)
 
 ### General thoughts:
